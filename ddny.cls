@@ -1,47 +1,53 @@
 %% ddny.cls
 %% LaTeX document class pro Proceedings workshopu 'Doktorandske dny na KM FJFI'
 %% Autor: Petr Ambroz <petr.ambroz@fjfi.cvut.cz>
-%% verze: 0.32
+%% verze: 0.35
 %%
 %% ---------------------------------------------------------------------------------
 %%
 %% Changelog
-%% *0.1 07/2006  
-%%           Prvni verze zasilana s pokyny pro Doktorandske dny 2006
-%% *0.2 10/2006  
-%%           FIX) meziodstavcove mezery ve finalni verzi
-%%           FIX) prepinani jazykove zavislych elementu ve finalni verzi
-%%           ADD) zahlavi na praznych stranach pri volbe openright
-%%           FIX) nulovani citace tabulek a obrazku
-%%           FIX) nulovani footnote counteru pred sazenim thanks poznamek 
-%%           ADD) \frontmatter a \mainmatter
-%%	     FIX) rozdeleny nazev fakulty v anglicke verzi afilace autoru
+%% *0.1 07/2006
+%%	Prvni verze zasilana s pokyny pro Doktorandske dny 2006
+%% *0.2 10/2006
+%%	FIX) meziodstavcove mezery ve finalni verzi
+%%	FIX) prepinani jazykove zavislych elementu ve finalni verzi
+%%	ADD) zahlavi na praznych stranach pri volbe openright
+%%	FIX) nulovani citace tabulek a obrazku
+%%	FIX) nulovani footnote counteru pred sazenim thanks poznamek
+%%	ADD) \frontmatter a \mainmatter
+%%	FIX) rozdeleny nazev fakulty v anglicke verzi afilace autoru
 %% *0.21 05/2007
-%%           FIX) drobne zmeny ve formatovani instituci
-%%	     FIX) \fjfiname Science -> Sciences
+%%	FIX) drobne zmeny ve formatovani instituci
+%%	FIX) \fjfiname Science -> Sciences
 %% *0.22 10/2009
-%%           ADD) \nohyphens
-%%           FIX) running title se defaultne bere z title
+%%	ADD) \nohyphens
+%%	FIX) running title se defaultne bere z title
 %% *0.23 09/2010
-%%           ADD) KF a KSE jako mozne afiliace studentu
+%%	ADD) KF a KSE jako mozne afiliace studentu
 %% *0.24 10/2010
-%%           ADD) prostredi pro sazbu seznamu klicovych slov
+%%	ADD) prostredi pro sazbu seznamu klicovych slov
 %% *0.25 10/2010
-%%           FIX) automaticka protekce \thanks v \title a \author
+%%	FIX) automaticka protekce \thanks v \title a \author
 %% *0.26 10/2013
-%%           FIX) novy nazev katedry KSE
+%%	FIX) novy nazev katedry KSE
 %% *0.3	 10/2013
-%%           ADD) je mozne mit 1-3 skolitele
+%%	ADD) je mozne mit 1-3 skolitele
 %% *0.31 10/2013
-%%	     ADD) running verze jmena autora se generuje automaticky
+%%	ADD) running verze jmena autora se generuje automaticky [pri zapnute volbe 'heads']
 %% *0.32 10/2014
-%%	     FIX) running title zahazuje \thanks pouzity v title
-%%	     FIX) automaticke generovani running author funguje i pri pouzitem thanks v \author
+%%	FIX) running title automaticky zahazuje \thanks pouzity v title
+%%	FIX) automaticke generovani running author funguje i pri pouzitem thanks v \author
 %% *0.33 10/2017
-%%	     ADD) prostredi 'full' pro referenci na plnou verzi clanku je-li zaslan pouze extended abstrakt
+%%	ADD) prostredi 'full' pro referenci na plnou verzi clanku je-li zaslan pouze extended abstrakt
+%% *0.34 10/2022
+%%	FIX) volba jazyka sazby abstraktu v závislosti na hodnotě povinného parametru
+%%	ADD) zrusena option babel, balicek babel se pouzije automaticky vzdy!
+%% *0.35 8/2023
+%%  DEL) zrusen parametr rocnik prikazu \author
+%%  ADD) prikaz \author má nově povinny parametr, kterym autor specifikuje studini program
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{ddny}[2017/10/03 v0.33 DDny Proceedings]
+\ProvidesClass{ddny}[2022/8/10 v0.35 DDny Proceedings]
 
 \LoadClass[a4paper,12pt,twoside]{article}
 \RequirePackage{ifthen,hyphenat,calc,url,ifoddpage}
@@ -51,7 +57,6 @@
 
 \newif\if@openright\@openrightfalse
 \newif\if@ddny@heads\@ddny@headsfalse
-\newif\if@babel\@babelfalse
 \newif\if@czechauto\@czechautofalse
 \newif\if@slovakauto\@slovakautofalse
 
@@ -59,17 +64,15 @@
 \DeclareOption{openany}{\@openrightfalse}
 \DeclareOption{heads}{\@ddny@headstrue}
 \DeclareOption{noheads}{\@ddny@headsfalse}
-\DeclareOption{babel}{\@babeltrue}
-\DeclareOption{nobabel}{\@babelfalse}
-\DeclareOption{czech}{\@babeltrue\@czechautotrue}
-\DeclareOption{slovak}{\@babeltrue\@slovakautotrue}
+\DeclareOption{czech}{\@czechautotrue}
+\DeclareOption{slovak}{\@slovakautotrue}
 
-\ExecuteOptions{openany,noheads,nobabel}
+\ExecuteOptions{openany,noheads}
 \ProcessOptions
 
-\if@babel
-  \RequirePackage[czech,slovak,english]{babel}
-\fi
+%\if@babel
+\RequirePackage[czech,slovak,english]{babel}
+%\fi
 
 \if@ddny@heads
   \RequirePackage{xstring}
@@ -84,12 +87,13 @@
 \setlength{\textheight}{661pt}
 \setlength{\headheight}{15pt}
 \setlength{\headsep}{25pt}
-\setlength{\topmargin}{(\paperheight-\textheight-\headheight-\headsep-\footskip)/2 - 1in}
+\setlength{\topmargin}%
+  {(\paperheight-\textheight-\headheight-\headsep-\footskip)/2-1in}
 
 %% horizontalni
 \setlength{\textwidth}{453pt}
-\setlength\oddsidemargin{(\paperwidth-\textwidth)/2 - 1in}
-\setlength\evensidemargin{(\paperwidth-\textwidth)/2 - 1in}
+\setlength\oddsidemargin{(\paperwidth-\textwidth)/2-1in}
+\setlength\evensidemargin{(\paperwidth-\textwidth)/2-1in}
 
 %% Cislovani a zahlavi
 
@@ -97,10 +101,10 @@
     \let\@oddfoot\@empty\let\@evenfoot\@empty
     \def\@evenhead{%
       \underline{\rule[-2pt]{0pt}{4pt}%
-      \makebox[\textwidth]{\hskip 2pt\thepage\hfill\slshape\leftmark\hskip 2pt}}}
+      \makebox[\textwidth]{\hskip2pt\thepage\hfill\slshape\leftmark\hskip2pt}}}
     \def\@oddhead{%
       \underline{\rule[-2pt]{0pt}{4pt}%
-      \makebox[\textwidth]{\hskip 2pt{\slshape\rightmark}\hfill\thepage\hskip 2pt}}}
+      \makebox[\textwidth]{\hskip2pt{\slshape\rightmark}\hfill\thepage\hskip2pt}}}
     \let\@mkboth\@gobbletwo
     \let\sectionmark\@gobble
     \let\subsectionmark\@gobble}
@@ -112,7 +116,7 @@
       \makebox[\textwidth]{\hskip 2pt\thepage\hfill}}}
     \def\@oddhead{%
       \underline{\rule[-2pt]{0pt}{4pt}%
-      \makebox[\textwidth]{\hfill\thepage\hskip 2pt}}}
+      \makebox[\textwidth]{\hfill\thepage\hskip2pt}}}
     \let\@mkboth\@gobbletwo
     \let\sectionmark\@gobble
     \let\subsectionmark\@gobble}
@@ -145,24 +149,31 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Jazykove zavisle elementy
 
-\newcommand{\yearname}{year of}
+\newcommand{\studprgprefix}{study programme}
 \newcommand{\advisorname}{advisor}
 \newcommand{\advisorsname}{advisors}
+
 \newcommand{\fjfiname}{Department of Mathematics\\%
   Faculty of Nuclear Sciences and Physical Engineering, CTU in Prague}
+
 \newcommand{\kmname}{Department of Mathematics\\%
   Faculty of Nuclear Sciences and Physical Engineering, CTU in Prague}
 \newcommand{\kfname}{Department of Physics\\%
   Faculty of Nuclear Sciences and Physical Engineering, CTU in Prague}
 \newcommand{\ksename}{Department of Software Engineering\\%
   Faculty of Nuclear Sciences and Physical Engineering, CTU in Prague}
-  
+
+\newcommand{\ainame}{Applied Informatics}
+\newcommand{\miname}{Mathematical Engineering}
+\newcommand{\ktname}{Quantum Technologies}
+
 \newcommand{\utianame}{Institute of Information Theory and Automation, CAS}
 \newcommand{\uiname}{Institute of Computer Science, CAS}
 
-\if@babel
+%\if@babel
+
   \addto\captionenglish{%
-    \renewcommand{\yearname}{year of}  
+    \renewcommand{\studprgprefix}{study programme}
     \renewcommand{\advisorname}{advisor}
     \renewcommand{\advisorsname}{advisors}
     \renewcommand{\fjfiname}{Department of Mathematics\\%
@@ -173,12 +184,15 @@
       Faculty of Nuclear Sciences and Physical Engineering, CTU in Prague}
     \renewcommand{\ksename}{Department of Software Engineering\\ %
       Faculty of Nuclear Sciences and Physical Engineering, CTU in Prague}
-    \renewcommand{\refname}{References}}
+    \renewcommand{\refname}{References}
+    \renewcommand{\ainame}{Applied Informatics}
+    \renewcommand{\miname}{Mathematical Engineering}
+    \renewcommand{\ktname}{Quantum Technologies}}
 
   \addto\captionsczech{%
-    \renewcommand{\yearname}{ro\v{c}n\'ik}
+    \renewcommand{\studprgprefix}{studiní program}
     \renewcommand{\advisorname}{\v{s}kolitel}
-    \renewcommand{\advisorsname}{\v{s}kolitel\'e}    
+    \renewcommand{\advisorsname}{\v{s}kolitel\'e}
     \renewcommand{\fjfiname}{Katedra matematiky\\%
       Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
     \renewcommand{\kmname}{Katedra matematiky\\%
@@ -187,10 +201,13 @@
       Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
     \renewcommand{\ksename}{Katedra softwarov\'eho in\v{z}en\'yrstv\'i\\%
       Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
-    \renewcommand{\refname}{Literatura}}
+    \renewcommand{\refname}{Literatura}
+    \renewcommand{\ainame}{Aplikovaná informatika}
+    \renewcommand{\miname}{Matematické inženýrství}
+    \renewcommand{\ktname}{Kvantové technologie}}
 
   \addto\captionsslovak{%
-    \renewcommand{\yearname}{ro\v{c}n\'ik}  
+    \renewcommand{\studprgprefix}{\v{s}tudijn\'y program}
     \renewcommand{\advisorname}{\v{s}kolite\v{l}}
     \renewcommand{\advisorsname}{\v{s}kolite\v{l}\'e}
     \renewcommand{\fjfiname}{Katedra matematiky\\%
@@ -201,51 +218,55 @@
       Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
     \renewcommand{\ksename}{Katedra softwarov\'eho in\v{z}inierstva\\%
       Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
-    \renewcommand{\refname}{Literat\'ura}}
-\fi
+    \renewcommand{\refname}{Literat\'ura}
+    \renewcommand{\ainame}{Aplikovan\'a informatika}
+    \renewcommand{\miname}{Matematick\'e in\v{z}inierstvo}
+    \renewcommand{\ktname}{Kvantov\'e technol\'ogie}}
 
-\newcommand{\changelangconst}{%
-  \iflanguage{english}{%
-    \renewcommand{\yearname}{year of}
-    \renewcommand{\advisorname}{advisor}
-    \renewcommand{\advisorsname}{advisors}
-    \renewcommand{\fjfiname}{Department of Mathematics, %
-      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
-    \renewcommand{\kmname}{Department of Mathematics, %
-      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
-    \renewcommand{\kfname}{Department of Physics, %
-      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
-    \renewcommand{\ksename}{Department of Software Engineering, %
-      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
-    \renewcommand{\refname}{References}}{}
-  \iflanguage{czech}{%
-    \renewcommand{\yearname}{ro\v{c}n\'ik}
-    \renewcommand{\advisorname}{\v{s}kolitel}
-    \renewcommand{\advisorsname}{\v{s}kolitel\'e}
-    \renewcommand{\fjfiname}{Katedra matematiky, %
-      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
-    \renewcommand{\kmname}{Katedra matematiky, %
-      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
-    \renewcommand{\kfname}{Katedra fyziky, %
-      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
-    \renewcommand{\ksename}{Katedra softwarového inženýrství, %
-      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
-    \renewcommand{\refname}{Literatura}}{}
-  \iflanguage{slovak}{%
-    \renewcommand{\yearname}{ro\v{c}n\'ik}  
-    \renewcommand{\advisorname}{\v{s}kolite\v{l}}
-    \renewcommand{\advisorsname}{\v{s}kolite\v{l}\'e}
-    \renewcommand{\fjfiname}{Katedra matematiky, %
-      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
-    \renewcommand{\kmname}{Katedra matematiky, %
-      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
-    \renewcommand{\kfname}{Katedra fyziky, %
-      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
-    \renewcommand{\ksename}{Katedra softwarového inžinierstva, %
-      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
-    \renewcommand{\refname}{Literat\'ura}}{}}
+%\fi
 
-  
+%\newcommand{\changelangconst}{%
+%  \iflanguage{english}{%
+%    \renewcommand{\yearname}{year of}
+%    \renewcommand{\advisorname}{advisor}
+%    \renewcommand{\advisorsname}{advisors}
+%    \renewcommand{\fjfiname}{Department of Mathematics, %
+%      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
+%    \renewcommand{\kmname}{Department of Mathematics, %
+%      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
+%    \renewcommand{\kfname}{Department of Physics, %
+%      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
+%    \renewcommand{\ksename}{Department of Software Engineering, %
+%      Faculty of Nuclear Sciences and Physical\\ Engineering, CTU in Prague}
+%    \renewcommand{\refname}{References}}{}
+%  \iflanguage{czech}{%
+%    \renewcommand{\yearname}{ro\v{c}n\'ik}
+%    \renewcommand{\advisorname}{\v{s}kolitel}
+%    \renewcommand{\advisorsname}{\v{s}kolitel\'e}
+%    \renewcommand{\fjfiname}{Katedra matematiky, %
+%      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
+%    \renewcommand{\kmname}{Katedra matematiky, %
+%      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
+%    \renewcommand{\kfname}{Katedra fyziky, %
+%      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
+%    \renewcommand{\ksename}{Katedra softwarového inženýrství, %
+%      Fakulta jadern\'a a fyzik\'aln\v{e} in\v{z}en\'yrsk\'a, \v{C}VUT v Praze}
+%    \renewcommand{\refname}{Literatura}}{}
+%  \iflanguage{slovak}{%
+%    \renewcommand{\yearname}{ro\v{c}n\'ik}
+%    \renewcommand{\advisorname}{\v{s}kolite\v{l}}
+%    \renewcommand{\advisorsname}{\v{s}kolite\v{l}\'e}
+%    \renewcommand{\fjfiname}{Katedra matematiky, %
+%      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
+%    \renewcommand{\kmname}{Katedra matematiky, %
+%      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
+%    \renewcommand{\kfname}{Katedra fyziky, %
+%      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
+%    \renewcommand{\ksename}{Katedra softwarového inžinierstva, %
+%      Fakulta jadrov\'a a fyzik\'alne in\v{z}inierska, \v{C}VUT v Praze}
+%    \renewcommand{\refname}{Literat\'ura}}{}}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  maketitle
 
@@ -271,7 +292,8 @@
     \renewcommand*{\author}[5][ra]{%
 	\gdef\@author{#2}%
 	\gdef\@katedra{#3}%
-	\gdef\@rocnik{#4}%
+%	\gdef\@rocnik{#4}%
+    \gdef\@studprg{#4}%
 	\gdef\@email{#5}%
 	\ifthenelse{\equal{#1}{ra}}%
 	    {\noexpandarg%
@@ -285,7 +307,9 @@
     \renewcommand*{\author}[5][ra]{%
 	\gdef\@author{#2}%
 	\gdef\@katedra{#3}%
-	\gdef\@rocnik{#4}%
+%	\gdef\@rocnik{#4}%
+%    \expandafter\gdef\@studprg{\csname #4name\endcsname}
+	\gdef\@studprg{#4}%
 	\gdef\@email{#5}%
 	\gdef\@authorrunning{}}
 \fi
@@ -336,6 +360,7 @@
 \fi
 
 \renewcommand{\maketitle}{%
+  %\selectlanguage{english}
   \if@czechauto
     \selectlanguage{czech}
   \fi
@@ -363,12 +388,11 @@
   \global\let\@thanks\@empty%
   \global\let\@author\@empty%
   \global\let\@email\@empty%
-  \global\let\@rocnik\@empty%
-  \global\let\@katedra\@empty%  
+%  \global\let\@rocnik\@empty%
+  \global\let\@studprg\@empty%
+  \global\let\@katedra\@empty%
   \global\let\@date\@empty%
   \global\let\@title\@empty%
-%  \global\let\@advisor\@empty%
-%  \global\let\@inst\@empty%
   \global\let\title\relax%
   \global\let\author\relax%
   \global\let\date\relax}
@@ -376,20 +400,14 @@
 \newcounter{emptycnt}
 \newcommand*{\@eqcnt@name}{emptycnt}
 
-\newcommand{\@rok}{%
-\if@babel
-  \iflanguage{english}{%
-    \ifthenelse{\equal{\@rocnik}{1}}{\@rocnik{st} \yearname}{%
-      \ifthenelse{\equal{\@rocnik}{2}}{\@rocnik{nd} \yearname}{%
-        \ifthenelse{\equal{\@rocnik}{3}}{\@rocnik{rd} \yearname}{%
-          \@rocnik{th} \yearname}}}}
-  {\@rocnik{.} \yearname}
-\else
-  \ifthenelse{\equal{\@rocnik}{1}}{\@rocnik{st} \yearname}{%
-    \ifthenelse{\equal{\@rocnik}{2}}{\@rocnik{nd} \yearname}{%
-      \ifthenelse{\equal{\@rocnik}{3}}{\@rocnik{rd} \yearname}{%
-        \@rocnik{th} \yearname}}}
-\fi}
+%\newcommand{\@rok}{%
+%  \iflanguage{english}{%
+%    \ifthenelse{\equal{\@rocnik}{1}}{\@rocnik{st} \yearname}{%
+%      \ifthenelse{\equal{\@rocnik}{2}}{\@rocnik{nd} \yearname}{%
+%        \ifthenelse{\equal{\@rocnik}{3}}{\@rocnik{rd} \yearname}{%
+%          \@rocnik{th} \yearname}}}}
+%  {\@rocnik{.} \yearname}
+%}
 
 \def\@maketitle{%
   \if@openright
@@ -405,13 +423,15 @@
   \vskip 2.5em%
   \begin{quotation}
   \noindent%
-  {\large\lineskip .5em \@author\\[1em]}%
-  \@rok PGS, email: \texttt{\@email}\\%
-  \ifthenelse{\equal{\@katedra}{kf}}%
-  {\nohyphens{\kfname}}%
-  {\ifthenelse{\equal{\@katedra}{kse}}
-   {\nohyphens{\ksename}}%
-   {\nohyphens{\kmname}}}\\[2mm]%
+  {\large\lineskip .5em \@author\\}%
+  \texttt{\@email}\\[1em]%
+  \studprgprefix:~\nohyphens{\expandafter\csname\@studprg name\endcsname}\\%
+  \expandafter\csname\@katedra name\endcsname\\[2mm]%
+%  \ifthenelse{\equal{\@katedra}{kf}}%
+%  {\nohyphens{\kfname}}%
+%  {\ifthenelse{\equal{\@katedra}{kse}}
+%   {\nohyphens{\ksename}}%
+%   {\nohyphens{\kmname}}}\\[2mm]%
   \ifnum\value{NumberOfAdvisors}=1
 	\advisorname:~\@advisori, \nohyphens{\@insti}\par%
   \else
@@ -425,19 +445,41 @@
 	\@advisorii, \nohyphens{\@instii}\\[1mm]
 	\@advisoriii, \nohyphens{\@instiii}\par%
     \fi
-  \fi  
+  \fi
   \end{quotation}
   \vskip 1em}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Abstrakt a klicova slova
 
+%\renewenvironment{abstract}[1]{%
+%  \small%
+%  \ifthenelse{\equal{#1}{english}}%
+%  {\noindent\textbf{Abstract.}}%
+%  {\noindent\textbf{Abstrakt.}}}%
+%  {\vskip 0.5em}
+
+%\renewenvironment{abstract}[1]{%
+%  \small%
+%  \ifthenelse{\equal{#1}{english}}%
+%  {\noindent\textbf{Abstract.}\selectlanguage{english}}%
+%  {\ifthenelse{\equal{#1}{czech}}%
+%  {\noindent\textbf{Abstrakt.}\selectlanguage{czech}}%
+%  {\noindent\textbf{Abstrakt.}\selectlanguage{slovak}}}}%
+%  {\vskip0.5em%
+%  \selectlanguage{english}%
+%  \if@czechauto\selectlanguage{czech}\fi%
+%  \if@slovakauto\selectlanguage{slovak}\fi}
+
 \renewenvironment{abstract}[1]{%
   \small%
   \ifthenelse{\equal{#1}{english}}%
-  {\noindent\textbf{Abstract.}}%
-  {\noindent\textbf{Abstrakt.}}}%
-  {\vskip 0.5em}
+  {\noindent\textbf{Abstract. }\begin{otherlanguage}{english}}%
+  {\ifthenelse{\equal{#1}{czech}}%
+  {\noindent\textbf{Abstrakt. }\begin{otherlanguage}{czech}}%
+  {\noindent\textbf{Abstrakt. }\begin{otherlanguage}{slovak}}}}%
+  {\vskip0.5em%
+  \end{otherlanguage}}
 
 \newenvironment{keywords}[1]{%
   \small%
@@ -454,7 +496,7 @@
   {\noindent\textbf{Full paper:}}%
   {\ifthenelse{\equal{#1}{czech}}%
   {\noindent\textbf{Pln\'a verze:}}%
-  {\noindent\textbf{Pln\'a verzia:}}}}%       
+  {\noindent\textbf{Pln\'a verzia:}}}}%
   {\vskip 0.5em}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -470,11 +512,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Prikazy pro zaverecnou sazbu
 
-\newcommand*{\paper}[2][]{%
-  \ifthenelse{\equal{#1}{}}{}{\selectlanguage{#1}\changelangconst}%
-  \begingroup%
-  \input{#2}%
-  \endgroup}
+%\newcommand*{\paper}[2][]{%
+%  \ifthenelse{\equal{#1}{}}{}{\selectlanguage{#1}\changelangconst}%
+%  \begingroup%
+%  \input{#2}%
+%  \endgroup}
 
 \newcommand*{\eqcnt}[1]{%
   \renewcommand*{\@eqcnt@name}{#1}}
